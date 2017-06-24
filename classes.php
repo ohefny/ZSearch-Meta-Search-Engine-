@@ -910,12 +910,12 @@ class resultSet
 	private $titles = array();
 	private $snippets = array();
 	private $scores = array();
+   
 	
 	// **********
 	// METHODS
 	// **********
-	
-	// Add Url to resultSet
+		// Add Url to resultSet
 	public function addUrl($url){
 		array_push($this->urls, $url);
 		$this->addNumItems();
@@ -923,7 +923,7 @@ class resultSet
 	
 	// Unset Url from Agg liist - for displaying clusters
 	public function unsetUrl($url){
-		unset($this->urls[$url]);
+		unset($this->urls[$url]); 
 		$this->removeNumItems();
 	}
     
@@ -1000,6 +1000,9 @@ class resultSet
 	public function returnUrlsV2($i){
 		return $this->urls[$i];
 	}
+    public function returnUrlswithoutwww($i){
+        return $this->urls_without_www[$i];
+    }
 	
 	// RETURN TITLES
 	public function returnTitles(){
@@ -1237,7 +1240,7 @@ class formatter
 			{
 				// Print the details according to the ordered array
 				{
-					echo '</br><strong>#'.($i+$_SESSION['offset']).': '.$this->$resultSet->returnTitlesV2($i).'</strong>';
+                    echo '</br>'.'<a href="'.$this->$resultSet->returnUrlsV2($i).'">'.'<strong>#'.($i+$_SESSION['offset']).': '.$this->$resultSet->returnTitlesV2($i).'</strong>'.'</a>';
 					echo '</br>'.'<a href="'.$this->$resultSet->returnUrlsV2($i).'">'.$this->$resultSet->returnUrlsV2($i).'</a>';
 					echo '</br>'.$this->$resultSet->returnSnippetsV2($i);
 					//echo '</br>Score: '.$this->$resultSet->returnScoresV2($i);
@@ -1303,7 +1306,7 @@ class aggregator
 	// ***********************		
 	
 	// Weighted Borda-Fuse
-	public function dataFusion($resultSetFlag1, $resultSetFlag2, $resultSetFlag3, $resultSet1, $resultSet2, $resultSet3) {
+	public function dataFusion($resultSetFlag1, $resultSetFlag2, $resultSetFlag3, $resultSet1, $resultSet2, $resultSet3,$resNums) {
 				
 		// input search engine weights
 		$weight1=1.34;
@@ -1313,7 +1316,9 @@ class aggregator
 		// Conditional Initialising of the the aggregated array - includes checks for error of null result set
 		if ($resultSetFlag2 == TRUE)
 		{
-			for($i=0, $count = $resultSet2->returnNumItems(); $i<$count;$i++ )
+            $count = $resNums<=$resultSet2->returnNumItems() ? $resNums : $resultSet2->returnNumItems();
+            echo "BING COUNT ".$count."<br>";
+			for($i=0; $i<$count;$i++ )
 			{
 				$this->resultSetAgg->addUrl($resultSet2->returnUrlsV2($i));
 				$this->resultSetAgg->addTitle($resultSet2->returnTitlesV2($i));
@@ -1323,7 +1328,8 @@ class aggregator
 		}
 		else if($resultSetFlag1 == TRUE)
 		{
-			for($i=0, $count = $resultSet1->returnNumItems(); $i<$count;$i++ )
+            $count = $resNums<=$resultSet1->returnNumItems() ? $resNums : $resultSet1->returnNumItems();
+			for($i=0; $i<$count;$i++ )
 			{
 				$this->resultSetAgg->addUrl($resultSet1->returnUrlsV2($i));
 				$this->resultSetAgg->addTitle($resultSet1->returnTitlesV2($i));
@@ -1333,7 +1339,8 @@ class aggregator
 		}
 		else if ($resultSetFlag3 == TRUE)
 		{
-			for($i=0, $count = $resultSet3->returnNumItems(); $i<$count;$i++ )
+            $count = $resNums<=$resultSet3->returnNumItems() ? $resNums : $resultSet3->returnNumItems();
+			for($i=0; $i<$count;$i++ )
 			{
 				$this->resultSetAgg->addUrl($resultSet3->returnUrlsV2($i));
 				$this->resultSetAgg->addTitle($resultSet3->returnTitlesV2($i));
@@ -1356,24 +1363,26 @@ class aggregator
 			//
 			
 			$countAL = $this->resultSetAgg->returnNumItems();
+            //stripped urls  removes www/https/http from urls to match exact url
+             $stripped_urls=aggregator::strip_urls($this->resultSetAgg->returnUrls());
 
 			for($i=0, $count = $resultSet1->returnNumItems(); $i<$count;$i++ )
 			{
-				for($j=0; $j<$countAL;$j++ )
-				{
-                    //if url exists in the first set score+= score_of_this_result * weight1
-					if(in_array($resultSet1->returnUrlsV2($i), array($this->resultSetAgg->returnUrlsV2($j)), TRUE))
-					{
-						$this->resultSetAgg->sumFusedScores($resultSet1->returnScoresV2($i), $j, $weight1); //
-					}
-					else if(!in_array($resultSet1->returnUrlsV2($i), $this->resultSetAgg->returnUrls(), TRUE))
-					{
-						$this->resultSetAgg->addUrl($resultSet1->returnUrlsV2($i));
-						$this->resultSetAgg->addTitle($resultSet1->returnTitlesV2($i));
-						$this->resultSetAgg->addSnippet($resultSet1->returnSnippetsV2($i));
-						$this->resultSetAgg->addScore($resultSet1->returnScoresV2($i)*$weight1);
-					}
-				}
+
+                $idx=array_search(aggregator::strip_url($resultSet1->returnUrlsV2($i)),$stripped_urls , TRUE);
+                if($idx==FALSE){
+                    $this->resultSetAgg->addUrl($resultSet1->returnUrlsV2($i));
+                    $this->resultSetAgg->addTitle($resultSet1->returnTitlesV2($i));
+                    $this->resultSetAgg->addSnippet($resultSet1->returnSnippetsV2($i));
+                    $this->resultSetAgg->addScore($resultSet1->returnScoresV2($i)*$weight1);
+
+                }
+                else{
+                    echo 'duplicated in google id :: '.$idx.'in bing id :: '.$i.'<br>';
+                    $this->resultSetAgg->sumFusedScores($resultSet1->returnScoresV2($i), $idx, $weight1);
+                }
+
+				
 			}
 			
 			//
@@ -1381,25 +1390,28 @@ class aggregator
 			//
 			
 			$countAL = $this->resultSetAgg->returnNumItems();
-
+            $stripped_urls=aggregator::strip_urls($this->resultSetAgg->returnUrls());
 			for($i=0, $count = $resultSet3->returnNumItems(); $i<$count;$i++ )
 			{
-				for($j=0; $j<$countAL;$j++ )
-				{
-					if(in_array($resultSet3->returnUrlsV2($i), array($this->resultSetAgg->returnUrlsV2($j)), TRUE))
-					{
-						$this->resultSetAgg->sumFusedScores($resultSet3->returnScoresV2($i), $j, $weight3); //
+				
+					$idx=array_search(aggregator::strip_url($resultSet3->returnUrlsV2($i)),$stripped_urls , TRUE);
+					if($idx==false)
+                    {
+                        $this->resultSetAgg->addUrl($resultSet3->returnUrlsV2($i));
+                        $this->resultSetAgg->addTitle($resultSet3->returnTitlesV2($i));
+                        $this->resultSetAgg->addSnippet($resultSet3->returnSnippetsV2($i));
+                        $this->resultSetAgg->addScore($resultSet3->returnScoresV2($i)*$weight3);
+						
 					}
-					else if(!in_array($resultSet3->returnUrlsV2($i), $this->resultSetAgg->returnUrls(), TRUE))
+					else 
 					{
-						$this->resultSetAgg->addUrl($resultSet3->returnUrlsV2($i));
-						$this->resultSetAgg->addTitle($resultSet3->returnTitlesV2($i));
-						$this->resultSetAgg->addSnippet($resultSet3->returnSnippetsV2($i));
-						$this->resultSetAgg->addScore($resultSet3->returnScoresV2($i)*$weight3);
+                        echo "duplicated in ask id :: ".$idx."in bing id :: ".$i."<br>";
+                      //  echo 'ASK '.(string)$this->$resultSet3->returnUrlsV2($i) . 'Bing '.(string)$this->resultSetAgg->returnUrlsV2($idx);
+						$this->resultSetAgg->sumFusedScores($resultSet3->returnScoresV2($i), $idx, $weight3); //
 					}
-				}
+				
 			}
-		} // End Cond 1
+		} // End Cond 1   
 		
 		// ***********
 		// Condition 2
@@ -1411,12 +1423,12 @@ class aggregator
 			//
 			
 			$countAL = $this->resultSetAgg->returnNumItems();
-
+            $stripped_urls=aggregator::strip_urls($this->resultSetAgg->returnUrls());
 			for($i=0, $count = $resultSet3->returnNumItems(); $i<$count;$i++ )
 			{
 				for($j=0; $j<$countAL;$j++ )
 				{
-					if(in_array($resultSet3->returnUrlsV2($i), array($this->resultSetAgg->returnUrlsV2($j)), TRUE))
+					if(in_array(aggregator::strip_url($resultSet3->returnUrlsV2($i)),$stripped_urls, TRUE))
 					{
 						$this->resultSetAgg->sumFusedScores($resultSet3->returnScoresV2($i), $j, $weight3); //
 					}
@@ -1433,7 +1445,23 @@ class aggregator
 		
     } // End of Data Fusion Function
 	
-	
+	 public static function strip_url($url){
+        $stripped=preg_replace('/(?:https?:\/\/)?(?:www\.)?/i',"",$url);
+        //$stripped=preg_replace("/(?:https?:\/\/)?(?:www\.)/", "", $url);
+        $idx=strrpos($stripped, '/');
+        if($idx!=false&&$idx==strlen($stripped)-1)
+            return substr($stripped,0, $idx);
+        return $stripped;
+        
+        
+    }
+     public static function strip_urls($urls){
+        $stripped=preg_replace('/(?:https?:\/\/)?(?:www\.)?/i',"",$urls);
+        //$stripped=preg_replace("/(?:https?:\/\/)?(?:www\.)/", "", $url);
+        return $stripped;
+        
+        
+    }
 	// Sort and Display Agg List
 	public function printResultSetAgg() {
 		

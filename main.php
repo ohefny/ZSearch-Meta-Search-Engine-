@@ -69,7 +69,7 @@ if($_SESSION['result_op']=='agg')
 	// Instantate Aggregator
 	$aggregator1 = new aggregator(new resultSet());
 	// Send result sets 1,2 & 3 to Data Fusion Function
-	$aggregator1->dataFusion($api1->returnGoogleJsonResultFlag(), $api1->returnBingJsonResultFlag(), count($arr)>0, $formatter1->returnResultSet('resultSet1'), $formatter1->returnResultSet('resultSet2'), $formatter1->returnResultSet('resultSet3'));
+	$aggregator1->dataFusion($api1->returnGoogleJsonResultFlag(), $api1->returnBingJsonResultFlag(), count($arr)>0, $formatter1->returnResultSet('resultSet1'), $formatter1->returnResultSet('resultSet2'), $formatter1->returnResultSet('resultSet3'),$_SESSION['results']);
 	// Print Agg Results
 	$aggregator1->printResultSetAgg();
 	
