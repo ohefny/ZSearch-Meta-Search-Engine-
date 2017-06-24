@@ -52,7 +52,7 @@ include 'classes.php';
 
 
 	<form method="get" action="<?php echo $_SERVER['PHP_SELF']; ?>">
-		<input style="font-weight:bold;" type="text" name="q" size = "50" value = "<?php echo $_GET['q']; ?>" required />
+		<input style="font-weight:normal;" type="text" name="q" size = "50" value = "<?php echo $_GET['q']; ?>" required />
 		<input type="submit" value="Search" class="btn btn-primary btn-small" />
 	</form>
 	</div><!-- End of Search Area -->

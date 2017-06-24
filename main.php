@@ -1,4 +1,6 @@
 <?php
+require_once('askSearch.php');
+
 	// Time query
 	$time_pre = microtime(true);
 	
@@ -61,16 +63,13 @@ if($_SESSION['result_op']=='agg')
 		$formatter1->formatBingJson($_SESSION['results'], $i*50);
 	}
 
-	// Blekko Results
-	$api1->blekkoApi($query3, $_SESSION['results'], 0);
-	// Set BLEKKO JSON Data
-	$formatter1->setBlekkoJson($api1->returnBlekkoJsonData(), $api1->returnBlekkoJsonResultFlag());
-	$formatter1->formatBlekkoJson($_SESSION['results'], 0);
-	
+	// Ask Results
+	$arr=askParser::getAggeregatedSearchResults($q ,$_SESSION['results']);
+    $formatter1->addAskResults($arr);
 	// Instantate Aggregator
 	$aggregator1 = new aggregator(new resultSet());
 	// Send result sets 1,2 & 3 to Data Fusion Function
-	$aggregator1->dataFusion($api1->returnGoogleJsonResultFlag(), $api1->returnBingJsonResultFlag(), $api1->returnBlekkoJsonResultFlag(), $formatter1->returnResultSet('resultSet1'), $formatter1->returnResultSet('resultSet2'), $formatter1->returnResultSet('resultSet3'));
+	$aggregator1->dataFusion($api1->returnGoogleJsonResultFlag(), $api1->returnBingJsonResultFlag(), count($arr)>0, $formatter1->returnResultSet('resultSet1'), $formatter1->returnResultSet('resultSet2'), $formatter1->returnResultSet('resultSet3'));
 	// Print Agg Results
 	$aggregator1->printResultSetAgg();
 	
@@ -104,13 +103,17 @@ else if($_SESSION['result_op']=='nonAgg')
 	// Set BING JSON Data
 	$formatter1->setBingJson($api1->returnBingJsonData(), $api1->returnBingJsonResultFlag());
 	$formatter1->formatBingJson(100, $_SESSION['offset']);
-
+    
+    $arr=askParser::getAskSearchResultsByPage($q ,intval(($_SESSION['offset']/10)) + 1);
+    
+    $formatter1->addAskResults($arr);
+	
 	// Call Blekko API
-	$api1->blekkoApi($query3, 10, ((int)$_SESSION['offset']/10));
+/*	$api1->blekkoApi($query3, 10, ((int)$_SESSION['offset']/10));
 	// Set BLEKKO JSON Data
 	$formatter1->setBlekkoJson($api1->returnBlekkoJsonData(), $api1->returnBlekkoJsonResultFlag());
 	$formatter1->formatBlekkoJson(100, $_SESSION['offset']);
-	
+	*/ 
 	echo '<div class="row"><div class="span4"><h2>Google</h2>';
 	
 	// Display Google Results to Screen
@@ -119,9 +122,9 @@ else if($_SESSION['result_op']=='nonAgg')
 	
 	// Display Bing Results
 	$formatter1->printResultSet('resultSet2', $_SESSION['results']);
-	echo '</div><div class="span4"><h2>Blekko</h2>';
+	echo '</div><div class="span4"><h2>Ask</h2>';
 	
-	// Display Blekko Results
+	// Display Ask Results
 	$formatter1->printResultSet('resultSet3', $_SESSION['results']);
 	echo '</div></div> <!-- End of Class row -->';
 	
@@ -176,16 +179,14 @@ else if($_SESSION['result_op']=='clustered')
 			$formatter1->formatBingJson($_SESSION['results'], $i*50);
 		}
 
-		// Blekko Results
-		$api1->blekkoApi($query3, $_SESSION['results'], 0);
-		// Set BLEKKO JSON Data
-		$formatter1->setBlekkoJson($api1->returnBlekkoJsonData(), $api1->returnBlekkoJsonResultFlag());
-		$formatter1->formatBlekkoJson($_SESSION['results'], 0);
+		// Ask Results
+		$askArr=askParser::getAggeregatedSearchResults($q ,$_SESSION['results']);
+    	$formatter1->addAskResults($askArr);
 		
 		// Instantate Aggregator
 		$aggregator1 = new aggregator(new resultSet());
 		// Send result sets 1,2 & 3 to Data Fusion Function
-		$aggregator1->dataFusion($api1->returnGoogleJsonResultFlag(), $api1->returnBingJsonResultFlag(), $api1->returnBlekkoJsonResultFlag(),$formatter1->returnResultSet('resultSet1'), $formatter1->returnResultSet('resultSet2'), $formatter1->returnResultSet('resultSet3'));
+		$aggregator1->dataFusion($api1->returnGoogleJsonResultFlag(), $api1->returnBingJsonResultFlag(),count($askArr)>0,$formatter1->returnResultSet('resultSet1'), $formatter1->returnResultSet('resultSet2'), $formatter1->returnResultSet('resultSet3'));
 		
 		// Instantiate Cluster Object
 		$cluster1 = new cluster;
@@ -304,7 +305,7 @@ else if($_SESSION['result_op']=='clustered')
 		$cluster1->setBindroids($ticks);
 		$cluster1->binBinatures($ticks);
 		
-		$cluster1->setBinTerms(($ticks+1));
+		$cluster1->setBinTerms(($ticks));
 		
 		echo '<div class="row"><div class="span3"><h2>Bina-clusters</h2>';
 		// Print Clustered Terms
@@ -315,7 +316,7 @@ else if($_SESSION['result_op']=='clustered')
 		echo '</div><div class="span5"><h2>Results</h2>';
 		// Print Cluser Term Results
 		//$aggregator1->printResultSetAggCluster(isset($_GET['term'])?$_GET['term']:$_GET['term']='');
-		//
+		//pass binTerm and binatureSums of each result 
 		$aggregator1->printResultSetAggBinCluster((isset($_GET['binTerm'])?$_GET['binTerm']:$_GET['binTerm']=''), $cluster1->returnBins(), $cluster1->returnBinatureSums());
 
 		// end of DIV

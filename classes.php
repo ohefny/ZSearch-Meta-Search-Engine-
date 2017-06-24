@@ -63,6 +63,7 @@ class query
 			foreach($thesaurus as $keyT=>$valueT)
 			if($valueQ == $keyT)
 			{
+                //appends words with the same meaning after  q+ and +->{other meanings} 
 				$q .= ' AND '.$valueT;
 			}
 		}
@@ -92,7 +93,7 @@ class query
 
         $first = '';
         if ( strpos($word, '-') !== false ) {
-            //list($first, $word) = explode('-', $word);
+    //list($first, $word) = explode('-', $word);
             //$first .= '-';
             $first = substr($word, 0, strrpos($word, '-') + 1); // Grabs hyphen too
             $word = substr($word, strrpos($word, '-') + 1);
@@ -777,7 +778,7 @@ class api
 		}
 		else 
 		{
-			//echo '</br>Blekko API: No Results!';
+        //echo '</br>Blekko API: No Results!';
 			$this->js1ResultFlag = FALSE;
 		}
 		
@@ -794,57 +795,52 @@ class api
 	// **********
 	// Bing API
 	// **********
-	public function bingApi($q, $results, $offset) {
-		
-		
-		// Keys
-		$acctKey = 'FpJuEBJPBTE9xY5X/k+xXXLJY8y1RoXC+wFxNb5s9jc= ';
-		$rootUri = 'https://api.datamarket.azure.com/Bing/Search';
-		
-		// Get the selected service operation (Web or Image).
-		$serviceOp = 'Web';
-		$numResults = '$top='.$results;
-		$skip = '$skip='.$offset;
-		
-		// Construct the full URI for the query.
-		$requestUri = "$rootUri/$serviceOp?\$format=json&Query=$q&$numResults&$skip";
-		//
-		$ch = curl_init($requestUri);
-		//
-		curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
-		curl_setopt($ch, CURLOPT_USERPWD, $acctKey . ":" . $acctKey );
-		curl_setopt($ch, CURLOPT_TIMEOUT, 30);
-		curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-		curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
-		$data = curl_exec($ch);
-		
-		// json decode
-		$this->js2 = json_decode($data);
-		//echo '</br></br>Vardumpjs2: ('.$offset.')</br></br>';
-		//var_dump($this->js2);
-		
-		// Set results Flag
-		if (!empty($this->js2->{'d'}->{'results'}) > '0')
-		{
-			//echo '</br>Blekko API: Results!!!';
-			$this->js2ResultFlag = TRUE;
-		}
-		else 
-		{
-			//echo '</br>Blekko API: No Results!';
-			$this->js2ResultFlag = FALSE;
-		}
-		
-		// Stores data in a file if required
-		//$content = serialize($this->js2);
-		//file_put_contents('tmp2',$content);
-		/*
-		*/
-		// Recovers data from a file if required
-		//$this->js2 = unserialize(file_get_contents('tmp2'));
-		//$this->js2ResultFlag = TRUE;
-		
-	} // End of Bing API Class
+public function bingApi($q, $results, $offset) {
+
+            //var_dump($offset);
+
+            // Keys
+        $acctKey = 'b173d7c872b242d6a63e2ab0d4dd3891';
+        $rootUri = 'https://api.cognitive.microsoft.com/bing/v5.0/search';
+        
+        // Construct the full URI for the query.
+        $requestUri = $rootUri.'?q='.$q.'&offset='.$offset;
+        // construct the key header array
+                $headers = array('Ocp-Apim-Subscription-Key : '.$acctKey);
+        
+        //
+                $ch = curl_init($requestUri);
+
+                curl_setopt($ch, CURLOPT_URL, $requestUri);
+                curl_setopt($ch, CURLOPT_HTTPHEADER,$headers);
+        curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+        curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+        $data = curl_exec($ch);
+        // json decode
+        $this->js2 = json_decode($data);
+        //echo '</br></br>Vardumpjs2: ('.$offset.')</br></br>';
+        //var_dump($this->js2->{'webPages'}->{'totalEstimatedMatches'});
+        
+        // Set results Flag
+        if (!empty($this->js2->{'webPages'}->{'totalEstimatedMatches'}) > '0')
+        {
+            $this->js2ResultFlag = TRUE;
+        }
+        else 
+        {
+            $this->js2ResultFlag = FALSE;
+        }
+        
+        // Stores data in a file if required
+        //$content = serialize($this->js2);
+        //file_put_contents('tmp2',$content);
+        /*
+        */
+        // Recovers data from a file if required
+        //$this->js2 = unserialize(file_get_contents('tmp2'));
+        //$this->js2ResultFlag = TRUE;
+        
+    } // End of Bing API Class
 	
 	// **********
 	// blekko api
@@ -1124,27 +1120,27 @@ class formatter
     }
 	
 	// Render BING data from JSON object to result set property
-	public function formatBingJson($results, $offset) {	
-		
-		if($this->js2ResultFlag == TRUE){
+	public function formatBingJson($results, $offset) {    
+        
+        if($this->js2ResultFlag == TRUE){
 
-			$j = $results - $offset + 1;
-			foreach($this->js2->{'d'}->{'results'} as $item)
-			{
-				if(!in_array($this->cleanLink($item->{'Url'}), $this->resultSet2->returnUrls(), TRUE))
-				{
-					$this->resultSet2->addUrl($this->cleanLink($item->{'Url'}));
-					$this->resultSet2->addTitle($this->cleanText($item->{'Title'}));
-					$this->resultSet2->addSnippet($this->cleanText($item->{'Description'}));
-					$this->resultSet2->addScore($j);
-					$j--;
-				}
-			}
-		}	
-		else{	
-			; // echo '</br>Bing: No Results!!!';
-		}
-	}
+            $j = $results - $offset + 1;
+            foreach($this->js2->{'webPages'}->{'value'} as $item)
+            {
+                if(!in_array($this->cleanLink($item->{'displayUrl'}), $this->resultSet2->returnUrls(), TRUE))
+                {
+                    $this->resultSet2->addUrl($this->cleanLink($item->{'displayUrl'}));
+                    $this->resultSet2->addTitle($this->cleanText($item->{'name'}));
+                    $this->resultSet2->addSnippet($this->cleanText($item->{'snippet'}));
+                    $this->resultSet2->addScore($j);
+                    $j--;
+                }
+            }
+        }   
+        else{   
+            ; // echo '</br>Bing: No Results!!!';
+        }
+    }
 	
 	// Set Blekko JSON data
 	public function setBlekkoJson($js_import, $js3ResultFlag) {
@@ -1174,7 +1170,22 @@ class formatter
 			; // echo '</br>Blekko: No Results!!!';
 		}
 	}
-	
+    public function addAskResults($askResults){
+        $resultsCount=count($askResults);
+        $one=0;
+        echo "COUNT ASK :: ".$resultsCount;
+        if($resultsCount>0){
+            foreach ($askResults as $key => $value) {
+                $this->resultSet3->addUrl($this->cleanLink($value->getLink()));
+                $this->resultSet3->addTitle($this->cleanText($value->getTitle()));
+                $this->resultSet3->addSnippet($this->cleanText(!empty($value->getAbstract()) ? $value->getAbstract() : ''));
+                $this->resultSet3->addScore($resultsCount-$value->getRank()+2);
+                //we add 2 not 1 as the return results is only 9 ..this will make score similar to other search enignes
+                            
+            }
+        }
+    }
+
 	// Print Urls
 	public function printUrls($resultSet) {
 		$this->$resultSet->printUrls();
@@ -1204,6 +1215,7 @@ class formatter
 	public function cleanLink($link) {
 		
 		$link = strip_tags($link);
+        //removes / if exists at the end of the link
 		if (substr($link,-1,1) == '/') $link = substr($link,0,strlen($link) - 1);
 		return $link;
     }
@@ -1296,7 +1308,7 @@ class aggregator
 		// input search engine weights
 		$weight1=1.34;
 		$weight2=1.27;
-		$weight3=1.0;
+		$weight3=1.13;
 		
 		// Conditional Initialising of the the aggregated array - includes checks for error of null result set
 		if ($resultSetFlag2 == TRUE)
@@ -1349,6 +1361,7 @@ class aggregator
 			{
 				for($j=0; $j<$countAL;$j++ )
 				{
+                    //if url exists in the first set score+= score_of_this_result * weight1
 					if(in_array($resultSet1->returnUrlsV2($i), array($this->resultSetAgg->returnUrlsV2($j)), TRUE))
 					{
 						$this->resultSetAgg->sumFusedScores($resultSet1->returnScoresV2($i), $j, $weight1); //
@@ -1468,6 +1481,7 @@ class aggregator
 		// Filter By Clustered Term
 		foreach($this->resultSetAgg->returnSnippets() as $key=>$value)
 		{
+            //replace non words with space
 			$value = preg_replace('/[^\w]/', ' ', $value);
 			$value = explode(' ', strtolower($value));
 			
@@ -1634,9 +1648,10 @@ class cluster
 		foreach($array as $item)
 		{
 			$this->tokeniseString(strip_tags($item));
-
+            //tokenise the snippet 
 			foreach($this->stringTokens as $key=>$value)
 			{
+                //if the word in the snippet not in stopwords+querytokens then give it a value of 0
 				if(!in_array($value, $stopwords, true))
 				{
 					$this->clusteredTerms[$value]=0;
@@ -1799,9 +1814,11 @@ class cluster
 				}
 				$i++;
 			}
+            //binatureSums contain sum of cluster terms occurances in each snippet
 			array_push($this->binatureSums, $tempsum);
 			$tempBinature = implode($tempBinature);
 			//echo '</br>'.$tempBinature;
+            //binatures contain a string that represents which terms found in each snippet with 1-0 
 			array_push($this->binatures, $tempBinature);
 		}
 	}
@@ -1870,8 +1887,9 @@ class cluster
 	
 	// Bin Terms
 	public function setBinTerms($int){
-		
-		$this->binTerms = array("0", "1", "2", "3");
+		for($i=0;$i<$int;$i++)
+            $this->binTerms[$i]="".$i;
+		//$this->binTerms = array("0", "1", "2", "3");
 	}
 	
 	// Display Most Frequent Bin Terms
@@ -1972,6 +1990,7 @@ class thesaurus
 		$line=fgets($fp);
 		while (!feof($fp))
 		{
+            //$part1 is a word $part2 is the whole line 
 			list($part1, $part2) = explode(',', $line, 2);
 			// Next line shortens synonyms to just one synonym
 			//list($part2, $part3) = explode(',', $part2, 2);
