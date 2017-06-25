@@ -45,16 +45,17 @@
 				$formatContentstr=stristr($urlContent,"<div class=\"PartialSearchResults-item\" data-zen=\"true\">");
 				$formatContentstr=stristr($formatContentstr,"<script>",true);
 				$resultsInHtml=explode("class=\"PartialSearchResults-item\"",$formatContentstr);
-				$count=1;
+				$count=(($pageNum-1)*9);
 				foreach($resultsInHtml as $mkey=>$mvalue){
 					//pass title , link ,abstract to constructor
 				
 			        $res = new askResult(askParser::extract_title($mvalue),askParser::extract_link($mvalue)
-			        	,askParser::extract_abstract($mvalue),$pageNum,$count++);
+			        	,askParser::extract_abstract($mvalue),$pageNum,$count);
 			        if((empty($res->getTitle())||empty($res->getLink())))
 			        	continue;
 			      	//add res object to the array
 			        $objArray[]=$res;
+			        $count++;
 			      
 	    		}
 	    		return $objArray;

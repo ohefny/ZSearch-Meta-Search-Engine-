@@ -1098,7 +1098,8 @@ class formatter
 		{
 			// Rank starting from 1
 			// Score starting from $_SESSION['results'] and down - Borda Count
-			$j = $results-$offset + 1;
+
+			$j = $results-$offset ;
 			foreach($this->js1->{'items'} as $item)
 			{
 				if(!in_array($this->cleanLink($item->{'link'}), $this->resultSet1->returnUrls(), TRUE))
@@ -1127,10 +1128,10 @@ class formatter
         
         if($this->js2ResultFlag == TRUE){
 
-            $j = $results - $offset + 1;
+            $j = $results - $offset ;
             foreach($this->js2->{'webPages'}->{'value'} as $item)
             {
-                if(!in_array($this->cleanLink($item->{'displayUrl'}), $this->resultSet2->returnUrls(), TRUE))
+                if(!in_array($this->cleanLink($item->{'url'}), $this->resultSet2->returnUrls(), TRUE))
                 {
                     $this->resultSet2->addUrl($this->cleanLink($item->{'displayUrl'}));
                     $this->resultSet2->addTitle($this->cleanText($item->{'name'}));
@@ -1176,13 +1177,16 @@ class formatter
     public function addAskResults($askResults){
         $resultsCount=count($askResults);
         $one=0;
+         $score=0;
         echo "COUNT ASK :: ".$resultsCount;
         if($resultsCount>0){
             foreach ($askResults as $key => $value) {
                 $this->resultSet3->addUrl($this->cleanLink($value->getLink()));
                 $this->resultSet3->addTitle($this->cleanText($value->getTitle()));
                 $this->resultSet3->addSnippet($this->cleanText(!empty($value->getAbstract()) ? $value->getAbstract() : ''));
-                $this->resultSet3->addScore($resultsCount-$value->getRank()+2);
+                $score=$resultsCount-$value->getRank();
+                $this->resultSet3->addScore($score);
+            
                 //we add 2 not 1 as the return results is only 9 ..this will make score similar to other search enignes
                             
             }
@@ -1324,6 +1328,7 @@ class aggregator
 				$this->resultSetAgg->addTitle($resultSet2->returnTitlesV2($i));
 				$this->resultSetAgg->addSnippet($resultSet2->returnSnippetsV2($i));
 				$this->resultSetAgg->addScore($resultSet2->returnScoresV2($i)*$weight2);
+
 			}
 		}
 		else if($resultSetFlag1 == TRUE)
@@ -1368,18 +1373,21 @@ class aggregator
 
 			for($i=0, $count = $resultSet1->returnNumItems(); $i<$count;$i++ )
 			{
+                
+                $stripped_url=aggregator::strip_url($resultSet1->returnUrlsV2($i));
+                $idx=array_search($stripped_url,$stripped_urls , TRUE);
+                if($idx!==FALSE){
+                    
+                   
+                    $this->resultSetAgg->sumFusedScores($resultSet1->returnScoresV2($i), $idx, $weight1);
+                     echo  $resultSet1->returnTitlesV2($i). ' duplicated in google id :: '.$i.'in bing id :: '.$idx." score ".$this->resultSetAgg->returnScoresV2($idx).'<br>';
 
-                $idx=array_search(aggregator::strip_url($resultSet1->returnUrlsV2($i)),$stripped_urls , TRUE);
-                if($idx==FALSE){
+                }
+                else{
                     $this->resultSetAgg->addUrl($resultSet1->returnUrlsV2($i));
                     $this->resultSetAgg->addTitle($resultSet1->returnTitlesV2($i));
                     $this->resultSetAgg->addSnippet($resultSet1->returnSnippetsV2($i));
                     $this->resultSetAgg->addScore($resultSet1->returnScoresV2($i)*$weight1);
-
-                }
-                else{
-                    echo 'duplicated in google id :: '.$idx.'in bing id :: '.$i.'<br>';
-                    $this->resultSetAgg->sumFusedScores($resultSet1->returnScoresV2($i), $idx, $weight1);
                 }
 
 				
@@ -1393,21 +1401,24 @@ class aggregator
             $stripped_urls=aggregator::strip_urls($this->resultSetAgg->returnUrls());
 			for($i=0, $count = $resultSet3->returnNumItems(); $i<$count;$i++ )
 			{
-				
+			
 					$idx=array_search(aggregator::strip_url($resultSet3->returnUrlsV2($i)),$stripped_urls , TRUE);
-					if($idx==false)
+					if($idx!==false)
                     {
-                        $this->resultSetAgg->addUrl($resultSet3->returnUrlsV2($i));
-                        $this->resultSetAgg->addTitle($resultSet3->returnTitlesV2($i));
-                        $this->resultSetAgg->addSnippet($resultSet3->returnSnippetsV2($i));
-                        $this->resultSetAgg->addScore($resultSet3->returnScoresV2($i)*$weight3);
+                        $this->resultSetAgg->sumFusedScores($resultSet3->returnScoresV2($i), $idx, $weight3); //
+                         echo $resultSet3->returnTitlesV2($i)." duplicated in ask id :: ".$i."in bing id :: ".$idx." score :: ".
+                         $this->resultSetAgg->returnScoresV2($idx)."<br>";
 						
 					}
 					else 
 					{
-                        echo "duplicated in ask id :: ".$idx."in bing id :: ".$i."<br>";
+                        $this->resultSetAgg->addUrl($resultSet3->returnUrlsV2($i));
+                        $this->resultSetAgg->addTitle($resultSet3->returnTitlesV2($i));
+                        $this->resultSetAgg->addSnippet($resultSet3->returnSnippetsV2($i));
+                        $this->resultSetAgg->addScore($resultSet3->returnScoresV2($i)*$weight3);
+                       
                       //  echo 'ASK '.(string)$this->$resultSet3->returnUrlsV2($i) . 'Bing '.(string)$this->resultSetAgg->returnUrlsV2($idx);
-						$this->resultSetAgg->sumFusedScores($resultSet3->returnScoresV2($i), $idx, $weight3); //
+						
 					}
 				
 			}
@@ -1428,6 +1439,7 @@ class aggregator
 			{
 				for($j=0; $j<$countAL;$j++ )
 				{
+                
 					if(in_array(aggregator::strip_url($resultSet3->returnUrlsV2($i)),$stripped_urls, TRUE))
 					{
 						$this->resultSetAgg->sumFusedScores($resultSet3->returnScoresV2($i), $j, $weight3); //
@@ -1442,6 +1454,7 @@ class aggregator
 				}
 			}
 		} // End Cond 2
+        
 		
     } // End of Data Fusion Function
 	
