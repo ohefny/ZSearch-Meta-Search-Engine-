@@ -4,6 +4,42 @@
 		"selected_items":
 		[
 			[
+				"print",
+				"print_r"
+			],
+			[
+				"strip_",
+				"strip_urls"
+			],
+			[
+				"agg",
+				"aggregator"
+			],
+			[
+				"preg",
+				"preg_replace"
+			],
+			[
+				"strrep",
+				"str_replace"
+			],
+			[
+				"str",
+				"stripped"
+			],
+			[
+				"urls",
+				"urls_without_www"
+			],
+			[
+				"false",
+				"FALSE"
+			],
+			[
+				"as",
+				"askArr"
+			],
+			[
 				"new",
 				"newArr"
 			],
@@ -64,10 +100,6 @@
 				"strrev"
 			],
 			[
-				"str",
-				"strlen"
-			],
-			[
 				"ask",
 				"askQuery"
 			],
@@ -111,6 +143,38 @@
 	},
 	"buffers":
 	[
+		{
+			"file": "askSearch.php",
+			"settings":
+			{
+				"buffer_size": 3953,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "main.php",
+			"settings":
+			{
+				"buffer_size": 11754,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "classes.php",
+			"settings":
+			{
+				"buffer_size": 59428,
+				"line_ending": "Windows"
+			}
+		},
+		{
+			"file": "/C/wamp64/www/index.php",
+			"settings":
+			{
+				"buffer_size": 3436,
+				"line_ending": "Windows"
+			}
+		}
 	],
 	"build_system": "",
 	"build_system_choices":
@@ -120,15 +184,19 @@
 	"command_palette":
 	{
 		"height": 104.0,
-		"last_filter": "instal",
+		"last_filter": "Snippet: str",
 		"selected_items":
 		[
+			[
+				"Snippet: str",
+				"Snippet: function __construct"
+			],
 			[
 				"instal",
 				"Package Control: Install Package"
 			]
 		],
-		"width": 512.0
+		"width": 400.0
 	},
 	"console":
 	{
@@ -153,6 +221,10 @@
 	],
 	"file_history":
 	[
+		"/C/wamp64/www/metasearch/main.php",
+		"/C/wamp64/www/metasearch/search.php",
+		"/C/wamp64/www/metasearch/metasearch.sublime-project",
+		"/C/wamp64/www/metasearch/project.sublime-project",
 		"/C/Users/BeTheChange/AppData/Roaming/Sublime Text 3/Packages/Default/Default (Windows).sublime-keymap",
 		"/C/Users/BeTheChange/AppData/Roaming/Sublime Text 3/Packages/User/Default (Windows).sublime-keymap",
 		"/C/wamp64/www/metasearch/classes.php",
@@ -160,7 +232,7 @@
 	],
 	"find":
 	{
-		"height": 28.0
+		"height": 36.0
 	},
 	"find_in_files":
 	{
@@ -174,6 +246,33 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"addScore",
+			"resultSet2.add",
+			"print",
+			"print_r",
+			"prin_r",
+			"echo",
+			"strip",
+			"score",
+			"+1",
+			"$idx",
+			"echo",
+			"formatGoog",
+			"score",
+			"witthout",
+			"aggreg",
+			"agger",
+			"aggr",
+			"agg",
+			"agge",
+			"print",
+			"aggre",
+			"aggrega",
+			"fusion",
+			"agg",
+			"unset",
+			"aggrega",
+			"echo",
 			"$agge",
 			"$rank",
 			"$page",
@@ -208,6 +307,133 @@
 	"groups":
 	[
 		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "askSearch.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3953,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								256,
+								256
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "main.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 11754,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1287,
+								1287
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.sublime-syntax",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 1020.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "classes.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 59428,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								32531,
+								32531
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.sublime-syntax",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 22533.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "/C/wamp64/www/index.php",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 3436,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								307,
+								307
+							]
+						],
+						"settings":
+						{
+							"syntax": "Packages/PHP/PHP.sublime-syntax"
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				}
+			]
+		},
+		{
+			"sheets":
+			[
+			]
+		},
+		{
 			"sheets":
 			[
 			]
@@ -219,7 +445,7 @@
 	},
 	"input":
 	{
-		"height": 0.0
+		"height": 36.0
 	},
 	"layout":
 	{
@@ -228,18 +454,32 @@
 			[
 				0,
 				0,
-				1,
+				2,
 				1
+			],
+			[
+				0,
+				1,
+				1,
+				2
+			],
+			[
+				1,
+				1,
+				2,
+				2
 			]
 		],
 		"cols":
 		[
 			0.0,
+			0.5,
 			1.0
 		],
 		"rows":
 		[
 			0.0,
+			0.925925925926,
 			1.0
 		]
 	},
@@ -250,7 +490,7 @@
 	},
 	"output.xdebug":
 	{
-		"height": 0.0
+		"height": 130.0
 	},
 	"pinned_build_system": "",
 	"project": "metasearch.sublime-project",
@@ -289,12 +529,74 @@
 	"selected_group": 0,
 	"settings":
 	{
+		"xdebug":
+		{
+			"restore_index":
+			{
+				"57":
+				{
+					"group": 0,
+					"index": 2
+				},
+				"58":
+				{
+					"group": 0,
+					"index": 0
+				},
+				"73":
+				{
+					"group": 0,
+					"index": 1
+				},
+				"86":
+				{
+					"group": 0,
+					"index": 3
+				}
+			},
+			"restore_layout":
+			{
+				"cells":
+				[
+					[
+						0,
+						0,
+						2,
+						1
+					],
+					[
+						0,
+						1,
+						1,
+						2
+					],
+					[
+						1,
+						1,
+						2,
+						2
+					]
+				],
+				"cols":
+				[
+					0.0,
+					0.5,
+					1.0
+				],
+				"rows":
+				[
+					0.0,
+					0.925925925926,
+					1.0
+				]
+			}
+		}
 	},
 	"show_minimap": true,
 	"show_open_files": false,
 	"show_tabs": true,
 	"side_bar_visible": true,
-	"side_bar_width": 150.0,
+	"side_bar_width": 317.0,
 	"status_bar_visible": true,
 	"template_settings":
 	{

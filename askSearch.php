@@ -1,7 +1,4 @@
 <?php
-//$query= something::complexQueryGoogle("me,earl and the dying girl");
-
-
 	class askResult{
 	    private $title;
 	    private $abstract;
@@ -86,7 +83,7 @@
 					}
 					$i++;
 				}
-				echo "Ask ... :: ".count($objArray)."<br>";
+
 				
 				return $objArray;
 		}
@@ -128,16 +125,8 @@
 			$q.=askParser::complexQuery($query);
 			$q.="&qsrc=998&page=";
 			$q.=$pageNum;
-			echo "url :: ".$q."<br>";
 			return $q;
 		}
-		/*public static function getResultsSet($arr){
-			$resSet=new resultSet();
-			foreach ($arr as $key => $value) {
-				$resSet
-			}
-
-		}*/
 		
 
 	}

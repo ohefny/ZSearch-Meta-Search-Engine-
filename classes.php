@@ -1178,7 +1178,6 @@ class formatter
         $resultsCount=count($askResults);
         $one=0;
          $score=0;
-        echo "COUNT ASK :: ".$resultsCount;
         if($resultsCount>0){
             foreach ($askResults as $key => $value) {
                 $this->resultSet3->addUrl($this->cleanLink($value->getLink()));
@@ -1321,7 +1320,7 @@ class aggregator
 		if ($resultSetFlag2 == TRUE)
 		{
             $count = $resNums<=$resultSet2->returnNumItems() ? $resNums : $resultSet2->returnNumItems();
-            echo "BING COUNT ".$count."<br>";
+           
 			for($i=0; $i<$count;$i++ )
 			{
 				$this->resultSetAgg->addUrl($resultSet2->returnUrlsV2($i));
@@ -1380,8 +1379,7 @@ class aggregator
                     
                    
                     $this->resultSetAgg->sumFusedScores($resultSet1->returnScoresV2($i), $idx, $weight1);
-                     echo  $resultSet1->returnTitlesV2($i). ' duplicated in google id :: '.$i.'in bing id :: '.$idx." score ".$this->resultSetAgg->returnScoresV2($idx).'<br>';
-
+                    
                 }
                 else{
                     $this->resultSetAgg->addUrl($resultSet1->returnUrlsV2($i));
@@ -1406,8 +1404,7 @@ class aggregator
 					if($idx!==false)
                     {
                         $this->resultSetAgg->sumFusedScores($resultSet3->returnScoresV2($i), $idx, $weight3); //
-                         echo $resultSet3->returnTitlesV2($i)." duplicated in ask id :: ".$i."in bing id :: ".$idx." score :: ".
-                         $this->resultSetAgg->returnScoresV2($idx)."<br>";
+                       
 						
 					}
 					else 
