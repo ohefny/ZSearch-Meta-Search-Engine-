@@ -20,14 +20,15 @@ require_once('askSearch.php');
 			$qX->tokeniseQuery(implode(" ",$qX->stem_list($q)));
 		}
 		
-		$q = $qX->expandQuery($q, $thesaurus1->returnThesaurus());
+		//$q = $qX->expandQuery($q, $thesaurus1->returnThesaurus());
+		$qX->makeSuggestions($q,$thesaurus1->returnThesaurus());
 	}
 	
 	// Process the Query
 	$q1 = new query;
 	$query1 = $q1->complexQueryGoogle($q);
 	$query2 = $q1->complexQueryBing($q);
-	$query3 = $q1->complexQueryBlekko($q);
+	$query3 = $q1->complexQueryAsk($q);
 	
 	
 // AGG
@@ -186,7 +187,7 @@ else if($_SESSION['result_op']=='clustered')
 		// Instantate Aggregator
 		$aggregator1 = new aggregator(new resultSet());
 		// Send result sets 1,2 & 3 to Data Fusion Function
-		$aggregator1->dataFusion($api1->returnGoogleJsonResultFlag(), $api1->returnBingJsonResultFlag(),count($askArr)>0,$formatter1->returnResultSet('resultSet1'), $formatter1->returnResultSet('resultSet2'), $formatter1->returnResultSet('resultSet3'));
+		$aggregator1->dataFusion($api1->returnGoogleJsonResultFlag(), $api1->returnBingJsonResultFlag(),count($askArr)>0,$formatter1->returnResultSet('resultSet1'), $formatter1->returnResultSet('resultSet2'), $formatter1->returnResultSet('resultSet3'),$_SESSION['results']);
 		
 		// Instantiate Cluster Object
 		$cluster1 = new cluster;
@@ -266,15 +267,15 @@ else if($_SESSION['result_op']=='clustered')
 		}
 
 		// Blekko Results
-		$api1->blekkoApi($query3, $_SESSION['results'], 0);
-		// Set BLEKKO JSON Data
-		$formatter1->setBlekkoJson($api1->returnBlekkoJsonData(), $api1->returnBlekkoJsonResultFlag());
-		$formatter1->formatBlekkoJson($_SESSION['results'], 0);
+		//$api1->blekkoApi($query3, $_SESSION['results'], 0);
+		// Set ASK Results Data
+		$arr=askParser::getAggeregatedSearchResults($q ,$_SESSION['results']);
+    	$formatter1->addAskResults($arr);
 		
 		// Instantate Aggregator
 		$aggregator1 = new aggregator(new resultSet());
 		// Send result sets 1,2 & 3 to Data Fusion Function
-		$aggregator1->dataFusion($api1->returnGoogleJsonResultFlag(), $api1->returnBingJsonResultFlag(), $api1->returnBlekkoJsonResultFlag(),$formatter1->returnResultSet('resultSet1'), $formatter1->returnResultSet('resultSet2'), $formatter1->returnResultSet('resultSet3'));
+		$aggregator1->dataFusion($api1->returnGoogleJsonResultFlag(), $api1->returnBingJsonResultFlag(), count($arr)>0,$formatter1->returnResultSet('resultSet1'), $formatter1->returnResultSet('resultSet2'), $formatter1->returnResultSet('resultSet3'),$_SESSION['results']);
 		
 		// Instantiate Cluster Object
 		$cluster1 = new cluster;

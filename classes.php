@@ -12,7 +12,7 @@ class query
 	// PROPERTIES
 	// **********
 	private $queryTokens = array();
-	
+	private $suggestions=array();
 	// **********
 	// METHODS
 	// **********
@@ -47,7 +47,7 @@ class query
 	}
 	
 	// Blekko Complex Queries
-	public function complexQueryBlekko($q){
+	public function complexQueryAsk($q){
 
 		$q=str_replace(" OR "," or ",$q);
 		$q=str_replace(' NOT ', ' -', $q);
@@ -65,13 +65,49 @@ class query
 			{
                 //appends words with the same meaning after  q+ and +->{other meanings} 
 				$q .= ' AND '.$valueT;
+               
 			}
 		}
 		$q = str_replace(",", " OR ", $q);
 		echo '<strong>> Expansion:</strong> '.$q.'</br>';
+       
 		return $q;
 	}
-	
+	public function makeSuggestions($q,$thesaurus){
+        $query_suggestions=array();
+
+        foreach ($this->queryTokens as $keyQ=>$valueQ)
+        {
+            $term_eq=array();
+            foreach($thesaurus as $keyT=>$valueT)
+                if($valueQ == $keyT)
+                {
+                    $term_eq[]=$valueT;
+                }
+            $suggestions[]=$term_eq;
+        }
+        $count=count($this->queryTokens);
+        for($i=0;$i<$count;$i++){
+            $arr=$suggestions[$i];
+            foreach ($arr as $key => $value) {
+                    $old_word=$this->queryTokens[$i];
+                   // $replacement=$old_word." OR ".$value;
+                    $str=str_replace($this->queryTokens[$i], $value, $q);
+                    $query_suggestions[]=$str;
+            }    
+
+        }
+        echo "<strong> Suggestions :: </strong>".'</br>';
+        $i=0;
+        foreach ($query_suggestions as $key => $value) {
+            if($i++!=0){
+                echo ' , ';
+            }
+            echo' <a href =search.php?q='.urlencode($value).'&result_op='.$_SESSION['result_op'].'>'.$value.'</a>';
+        }
+
+
+    }
 	// ******************
 	// Stemmer Functions
 	// ******************

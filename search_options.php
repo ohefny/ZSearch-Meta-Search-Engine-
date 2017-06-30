@@ -80,7 +80,7 @@ include 'classes.php';
 		<input name="clust_op" type="radio" value="b" <?php echo ($_SESSION['clust_op']== 'b') ?  'checked' : ''; ?> /> Binaclustering</br>
 		<hr>
 		
-		<label><strong>Select Query Expansion On/Off</strong></label>
+		<label><strong>Select Query Suggestions On/Off</strong></label>
 		<input name="queryEx" type="radio" value="on" <?php echo ($_SESSION['queryEx']== 'on') ?  'checked' : ''; ?> /> On &nbsp;
 		<input name="queryEx" type="radio" value="off" <?php echo ($_SESSION['queryEx']== 'off') ?  'checked' : ''; ?> /> OFF</br>
 		</br>

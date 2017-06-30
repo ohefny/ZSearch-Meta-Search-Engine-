@@ -147,7 +147,7 @@
 			"file": "askSearch.php",
 			"settings":
 			{
-				"buffer_size": 3953,
+				"buffer_size": 3877,
 				"line_ending": "Windows"
 			}
 		},
@@ -163,7 +163,7 @@
 			"file": "classes.php",
 			"settings":
 			{
-				"buffer_size": 59428,
+				"buffer_size": 59014,
 				"line_ending": "Windows"
 			}
 		},
@@ -217,7 +217,6 @@
 	},
 	"expanded_folders":
 	[
-		"/C/wamp64/www/metasearch"
 	],
 	"file_history":
 	[
@@ -246,6 +245,7 @@
 		"case_sensitive": false,
 		"find_history":
 		[
+			"echo",
 			"addScore",
 			"resultSet2.add",
 			"print",
@@ -307,7 +307,7 @@
 	"groups":
 	[
 		{
-			"selected": 0,
+			"selected": 2,
 			"sheets":
 			[
 				{
@@ -316,15 +316,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 3953,
+						"buffer_size": 3877,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								256,
-								256
+								3848,
+								3848
 							]
 						],
 						"settings":
@@ -333,10 +333,10 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 1330.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 0,
+					"stack_index": 1,
 					"type": "text"
 				},
 				{
@@ -352,8 +352,8 @@
 						"selection":
 						[
 							[
-								1287,
-								1287
+								388,
+								388
 							]
 						],
 						"settings":
@@ -362,7 +362,7 @@
 							"translate_tabs_to_spaces": false
 						},
 						"translation.x": 0.0,
-						"translation.y": 1020.0,
+						"translation.y": 0.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 3,
@@ -374,15 +374,15 @@
 					"semi_transient": false,
 					"settings":
 					{
-						"buffer_size": 59428,
+						"buffer_size": 59014,
 						"regions":
 						{
 						},
 						"selection":
 						[
 							[
-								32531,
-								32531
+								41085,
+								41085
 							]
 						],
 						"settings":
@@ -392,10 +392,10 @@
 							"translate_tabs_to_spaces": true
 						},
 						"translation.x": 0.0,
-						"translation.y": 22533.0,
+						"translation.y": 25322.0,
 						"zoom_level": 1.0
 					},
-					"stack_index": 1,
+					"stack_index": 0,
 					"type": "text"
 				},
 				{
@@ -420,7 +420,7 @@
 							"syntax": "Packages/PHP/PHP.sublime-syntax"
 						},
 						"translation.x": 0.0,
-						"translation.y": 0.0,
+						"translation.y": 361.0,
 						"zoom_level": 1.0
 					},
 					"stack_index": 2,
@@ -531,6 +531,7 @@
 	{
 		"xdebug":
 		{
+			"hide_conflict": false,
 			"restore_index":
 			{
 				"57":
